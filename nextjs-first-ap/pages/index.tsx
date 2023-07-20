@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import classes from '@/styles/Home.module.css'
+import Link from 'next/link'
 
 export default function Home() {
 
@@ -12,6 +13,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <h1 className={classes.userWelcome}>Hello user 23</h1>
+      <ul>
+        <li>
+          <Link href={'portfolio'}>Portfolio</Link>
+        </li>
+        <li>
+          <Link href={'clients'}>Clients</Link>
+        </li>
+      </ul>
     </>
   )
 }
