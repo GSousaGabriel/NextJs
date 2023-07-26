@@ -2,6 +2,7 @@ import EventList from '../components/events/event-list';
 import useSWR from 'swr';
 import { formatEvents, getFeaturedEvents } from '../helpers/api-util';
 import { useState } from 'react';
+import Head from 'next/head'
 
 function HomePage(props) {
   const [featuredEvents, setFeaturedEvents] = useState(props.featuredEvents)
@@ -10,8 +11,8 @@ function HomePage(props) {
     console.log('client fetch')
     const response = await fetch(url)
     const data = await response.json()
-    const formatedData= formatEvents(data)
-    const featured= formatedData.filter((event) => event.isFeatured);
+    const formatedData = formatEvents(data)
+    const featured = formatedData.filter((event) => event.isFeatured);
     setFeaturedEvents(featured)
   }
 
@@ -23,6 +24,10 @@ function HomePage(props) {
 
   return (
     <div>
+      <Head>
+        <title>NextJs Events</title>
+        <meta name="description" content="interesting featured events to explore"></meta>
+      </Head>
       <EventList items={featuredEvents} />
     </div>
   );
