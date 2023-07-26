@@ -9,7 +9,7 @@
             "type": "msedge",
             "request": "launch",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/next-api-app",
+            "webRoot": "${workspaceFolder}/next-api-exercise",
             "resolveSourceMapLocations": [
                 "${workspaceFolder}/**",
                 "!**/node_modules/**"
