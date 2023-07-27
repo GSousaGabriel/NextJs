@@ -2,7 +2,6 @@ import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import Head from 'next/head';
-import { getFilteredEvents } from '../../helpers/api-util';
 import EventList from '../../components/events/event-list';
 import ResultsTitle from '../../components/events/results-title';
 import Button from '../../components/ui/button';
@@ -11,11 +10,29 @@ import ErrorAlert from '../../components/ui/error-alert';
 function FilteredEventsPage() {
   const [loadedEvents, setLoadedEvents] = useState<IEvent[]>();
   const router = useRouter();
-
   const filterData = router.query.slug;
 
-  const { data, error } = useSWR(
-    'https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json'
+  const fetcher = async (url: string) => {
+    const year = filterData![0]
+    const month = filterData![1]
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        month,
+        year
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json()
+    return data.featuredEvents
+  }
+
+  const { data, error } = useSWR<IEvent[]>(
+    '/api/events/filter',
+    fetcher
   );
 
   useEffect(() => {

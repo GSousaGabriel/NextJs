@@ -1,14 +1,15 @@
 import { Fragment } from 'react';
 import Head from 'next/head';
-
-import { getEventById, getFeaturedEvents } from '../../helpers/api-util';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
 import EventContent from '../../components/event-detail/event-content';
 import ErrorAlert from '../../components/ui/error-alert';
 import Comments from '../../components/input/comments';
+import { GetStaticProps } from 'next';
+import { MongoClient, ObjectId } from 'mongodb';
+import { getFeaturedEvents } from '@/helpers/api-props-util';
 
-function EventDetailPage(props) {
+function EventDetailPage(props: { selectedEvent: IEvent }) {
   const event = props.selectedEvent;
 
   if (!event) {
@@ -28,25 +29,32 @@ function EventDetailPage(props) {
           content={event.description}
         />
       </Head>
-      <EventSummary title={event.title} />
+      <EventSummary title={event!.title} />
       <EventLogistics
         date={event.date}
-        address={event.location}
+        location={event.location}
         image={event.image}
         imageAlt={event.title}
       />
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
-      <Comments eventId={event.id} />
+      <Comments eventComment={event._id.toString()} />
     </Fragment>
   );
 }
 
-export async function getStaticProps(context) {
-  const eventId = context.params.eventId;
+export const getStaticProps: GetStaticProps = async (context) => {
+  const eventId = new ObjectId(context.params!.eventId as string);
+  const client = await MongoClient.connect('mongodb+srv://pasteu008:admin@cluster0.arcwbve.mongodb.net/')
+  const db = client.db('NextEvents')
+  const collection = db.collection('events')
 
-  const event = await getEventById(eventId);
+  const eventObject = await collection.findOne({ _id: eventId });
+  const event = {
+    ...eventObject,
+    _id: eventObject!._id.toString()
+  }
 
   return {
     props: {
@@ -57,10 +65,9 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
-  const events = await getFeaturedEvents();
-
-  const paths = events.map(event => ({ params: { eventId: event.id } }));
-
+  const featuredPaths = await getFeaturedEvents()
+  const paths = featuredPaths.map((featuredPath) => ({ params: { eventId: featuredPath._id.toString() } }))
+  
   return {
     paths: paths,
     fallback: 'blocking'

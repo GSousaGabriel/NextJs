@@ -3,11 +3,11 @@ import Link from 'next/link';
 import classes from './button.module.css';
 import { MouseEventHandler, ReactNode } from 'react';
 
-function Button(props: {link: string, onClick?: MouseEventHandler<HTMLButtonElement>, children: ReactNode}) {
+function Button(props: { link: string, onClick?: MouseEventHandler<HTMLButtonElement>, children: ReactNode }) {
   if (props.link) {
     return (
-      <Link href={props.link}>
-        <a className={classes.btn}>{props.children}</a>
+      <Link href={props.link} className={classes.btn}>
+        {props.children}
       </Link>
     );
   }

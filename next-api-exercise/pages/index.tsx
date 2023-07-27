@@ -1,10 +1,12 @@
 import Head from 'next/head';
-
-import { getFeaturedEvents } from '../helpers/api-util';
 import EventList from '../components/events/event-list';
 import NewsletterRegistration from '../components/input/newsletter-registration';
+import { GetServerSideProps } from 'next';
+import { getFeaturedEvents } from '@/helpers/api-props-util';
 
-function HomePage(props: { events: IEvent[] }) {
+function HomePage(props: { events: string }) {
+  const events = JSON.parse(props.events)
+
   return (
     <div>
       <Head>
@@ -15,19 +17,18 @@ function HomePage(props: { events: IEvent[] }) {
         />
       </Head>
       <NewsletterRegistration />
-      <EventList items={props.events} />
+      <EventList items={events} />
     </div>
   );
 }
 
-export async function getStaticProps() {
-  const featuredEvents = await getFeaturedEvents();
+export const getServerSideProps: GetServerSideProps = async () => {
+  const featuredEvents = await getFeaturedEvents()
 
   return {
     props: {
-      events: featuredEvents,
-    },
-    revalidate: 1800,
+      events: JSON.stringify(featuredEvents),
+    }
   };
 }
 

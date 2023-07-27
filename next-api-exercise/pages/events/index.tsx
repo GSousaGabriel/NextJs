@@ -2,13 +2,13 @@ import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-import { getAllEvents } from '../../helpers/api-util';
+import { getAllEvents } from '../../helpers/api-props-util';
 import EventList from '../../components/events/event-list';
 import EventsSearch from '../../components/events/events-search';
 
-function AllEventsPage(props: { events: IEvent[] }) {
+function AllEventsPage(props: { events: string }) {
   const router = useRouter();
-  const { events } = props;
+  const events = JSON.parse(props.events);
 
   function findEventsHandler(year: number, month: number) {
     const fullPath = `/events/${year}/${month}`;
@@ -35,11 +35,11 @@ function AllEventsPage(props: { events: IEvent[] }) {
 }
 
 export async function getStaticProps() {
-  const events = await getAllEvents();
+  const events = await getAllEvents()
 
   return {
     props: {
-      events: events,
+      events: JSON.stringify(events),
     },
     revalidate: 60
   };

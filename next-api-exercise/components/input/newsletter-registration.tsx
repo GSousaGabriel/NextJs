@@ -1,12 +1,14 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import classes from './newsletter-registration.module.css';
 import { newsletterResgistration } from '@/helpers/api-util';
+import NotificationContext from '@/store/notification-context';
 
 function NewsletterRegistration() {
   const [addError, setAddError] = useState<string>()
   const [buttonLabel, setButtonLabel] = useState<string>('Register')
   const [email, setEmail] = useState<string>()
-  const [message, setMessage] = useState<string>()
+
+  const notificationCtx = useContext(NotificationContext)
 
   async function registrationHandler(event: FormEvent) {
     event.preventDefault();
@@ -14,14 +16,33 @@ function NewsletterRegistration() {
     if (email) {
       setButtonLabel('Subscribing...')
 
-      const result = await newsletterResgistration(email)
-      if (result.success) {
-        setEmail('')
+      notificationCtx.showNotification({
+        title: 'Signing Up...',
+        message: 'Registering to newsletter',
+        status: 'pending'
+      })
+
+      try {
+        const result = await newsletterResgistration(email)
+        if (result.success) {
+          setEmail('')
+
+          notificationCtx.showNotification({
+            title: 'Success!',
+            message: result.message,
+            status: 'success'
+          })
+        }
+      } catch (e) {
+        setAddError(classes.error)
+        notificationCtx.showNotification({
+          title: 'Failed!',
+          message: (e as Error).message || 'Failed to register',
+          status: 'error'
+        })
+      }finally{
+        setButtonLabel('Register')
       }
-      setButtonLabel('Register')
-      setMessage(result.message)
-    } else {
-      setAddError(classes.error)
     }
 
   }
@@ -44,7 +65,6 @@ function NewsletterRegistration() {
             onChange={onChangeHandler}
             value={email}
           />
-          <p>{message}</p>
           <button disabled={buttonLabel === "Subscribing..." && true}>{buttonLabel}</button>
         </div>
       </form>
