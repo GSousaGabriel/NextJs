@@ -1,12 +1,14 @@
 // import { MongoClient } from 'mongodb'
+
+"use client"
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 import classes from './post-content.module.css'
 import PostHeader from './post-header'
 import Image from 'next/image'
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {atomDark} from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import SyntaxHighlighter from 'react-syntax-highlighter'
+import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
-export default async function PostContent(props: { post: IPost }) {
+export default function PostContent(props: { post: IPost }) {
     const { post } = props
     // const client = await MongoClient.connect('mongodb+srv://pasteu008:admin@cluster0.b98kvq5.mongodb.net/')
     // const db = client.db('Blog')
@@ -29,19 +31,18 @@ export default async function PostContent(props: { post: IPost }) {
             }
             return <p>{paragraph.children}</p>
         },
-        code(code: any) { 
+        code(code: any) {
             const { className, children } = code;
             const language = className.split('-')[1]; // className is something like language-js => We need the "js" part here
-           console.log(children)
+            console.log(children)
             return (
-              <SyntaxHighlighter
-                style={atomDark}
-                language={language}
-                // eslint-disable-next-line react/no-children-prop
-                children={children[0]}
-              />
+                <SyntaxHighlighter
+                    style={atomDark}
+                    language={language}>
+                    {children}
+                </SyntaxHighlighter>
             );
-          },
+        },
     }
 
 
