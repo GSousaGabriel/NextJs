@@ -15,9 +15,6 @@ export default async function Posts() {
     // const data = JSON.stringify((await collection.find().toArray()))
     const feature = getAllPosts()
 
-
-    console.log(feature)
-
     "use client"
     return (
         <>

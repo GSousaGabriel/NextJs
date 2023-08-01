@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        client = await MongoClient.connect('mongodb+srv://pastedsadu008:admin@cluster0.b98kvq5.mongodb.net/')
+        client = await MongoClient.connect(`mongodb+srv://${process.env.dbUser}:${process.env.dbPass}@${process.env.dbCluster}.b98kvq5.mongodb.net/`)
     } catch (e) {
         return new Response(JSON.stringify({ message: (e as Error).message }), {
             status: 500
@@ -28,11 +28,9 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const db = client.db('Blog')
+        const db = client.db(process.env.db)
         const collection = db.collection('messages')
         const data = await collection.insertOne(newMessage)
-
-        console.log(data)
 
         client.close()
         return new Response(JSON.stringify({ message: 'Successfully stored message!' }), {

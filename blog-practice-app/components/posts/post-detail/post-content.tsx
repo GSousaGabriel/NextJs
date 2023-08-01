@@ -5,8 +5,11 @@ import { ReactMarkdown } from 'react-markdown/lib/react-markdown'
 import classes from './post-content.module.css'
 import PostHeader from './post-header'
 import Image from 'next/image'
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import { atomDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
+import atomDark from 'react-syntax-highlighter/dist/cjs/styles/prism/atom-dark'
+import js from 'react-syntax-highlighter/dist/cjs/languages/prism/javascript'
+
+SyntaxHighlighter.registerLanguage('js', js)
 
 export default function PostContent(props: { post: IPost }) {
     const { post } = props
