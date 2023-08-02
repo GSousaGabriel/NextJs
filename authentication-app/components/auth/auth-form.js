@@ -34,17 +34,17 @@ function AuthForm() {
     const pass = passInput.current.value
 
     if (isLogin) {
-      const result = await signIn({
+      const result = await signIn('credentials', {
+        redirect: false,
         email,
-        pass,
-        profile: null,
-        email: null,
-        credentials: 'credentials'
+        pass
       })
 
       if (result.error) {
         console.log(result.error)
         return
+      }else{
+        
       }
 
     } else {

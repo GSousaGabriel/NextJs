@@ -1,16 +1,15 @@
 import NextAuth from 'next-auth'
-import CredentialsProvider  from 'next-auth/providers/credentials'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { connectToClient } from '../../../lib/db'
+import { comparePass } from '../../../lib/auth'
 
 export default NextAuth({
     providers: [
         CredentialsProvider({
-            name: "Credentials",
             session: {
                 jwt: true
             },
             async authorize(credentials) {
-                console.log('easdhao')
                 const client = await connectToClient()
                 const db = client.db('Blog')
                 const collection = db.collection('users')
